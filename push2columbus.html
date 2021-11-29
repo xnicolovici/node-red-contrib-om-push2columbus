@@ -1,35 +1,71 @@
+<!--
+    push2columbus node usage instructions
+-->
+<script type="text/html" data-help-name="push2columbus">
+    <p>A push2columbus node used to submit outputs to Columbus OM</p>
+    <p>To be written :-)</p>
+</script>
+
+
+
+<!--
+    columbusinstance configuration panel
+-->
+
+<script type="text/html" data-template-name="columbusinstance">
+    <div class="form-row">
+        <label for="node-config-cfgname"><i class="fa fa-bookmark"></i> Name</label>
+        <input type="text" id="node-config-cfgname" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-hostname"><i class="fa fa-bookmark"></i> Host</label>
+        <input class="input-append-left" type="text" id="node-config-input-hostname" placeholder="localhost" style="width: 40%;" >
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-config-input-user" placeholder="postgres">
+        <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
+        <input type="password" id="node-config-input-password" placeholder="postgres">
+    </div>
+ </script>
+
 <script type="text/javascript">
-    RED.nodes.registerType('push2columbus',{
-        category: 'connector',
-        color: "rgb(218, 196, 180)",
+    RED.nodes.registerType('columbusinstance',{
+        category: 'config',
+        color:"rgb(218, 196, 180)",
         defaults: {
-            name: {value:""},
-            instance: { value: "PColumbusOM", required: true },
-            appsource: {value: "DPR", required: true },
-            epuid: {value: "00000000_00000000_000", required: true },
-            doctype: {value: "SPOOL", required: true },
-            action: {value: "PRT", required: true },
+            cfgname:{value:""},
+            hostname: { value:"localhost",required:true},
         },
-        inputs:1,
-        outputs:1,
-        icon: "file.png",
+        credentials: {
+            user: {type: "text"},
+            password: {type: "password"}
+        },
         label: function() {
-            return this.name||"push2columbus";
-        }
+            return /*this.cfgname!=""?*/this.cfgname||this.hostname;
+        },
+	oneditprepare: function() {
+		$( "#node-config-cfgname" ).val(this.cfgname);
+	},
+	oneditsave: function() {
+		this.cfgname = $( "#node-config-cfgname" ).val();
+	}
+
     });
 </script>
 
+
+<!--
+    push2columbus main configuration panel
+-->
 <script type="text/html" data-template-name="push2columbus">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-instance"><i class="fa fa-tag"></i> Instance</label>
-        <select id="node-input-instance" placeholder="Instance">
-            <option value="PColumbusOM">PColumbusOM</option>
-            <option value="QColumbusOM">QColumbusOM</option>
-        </select>
+        <label for="node-input-columbusinstance"><i class="fa fa-tag"></i> columbusInstance</label>
+        <input type="text" id="node-input-columbusinstance">
     </div>
     <div class="form-row">
         <label for="node-input-appsource"><i class="fa fa-tag"></i> AppSource</label>
@@ -49,6 +85,23 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="push2columbus">
-    <p>Node to push data into Columbus OM using routing table keys (AppSource, EPUID, DocType, Action)</p>
+<script type="text/javascript">
+    RED.nodes.registerType('push2columbus',{
+        category: 'connector',
+        color: "rgb(148, 226, 252",
+        defaults: {
+            name: {value:""},
+            columbusinstance: { type: "columbusinstance", required: true },
+            appsource: {value: "DPR", required: true },
+            epuid: {value: "00000000_00000000_000", required: true },
+            doctype: {value: "SPOOL", required: true },
+            action: {value: "PRT", required: true },
+        },
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return this.name||"push2columbus";
+        }
+    });
 </script>
