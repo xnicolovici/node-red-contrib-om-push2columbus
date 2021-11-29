@@ -1,0 +1,17 @@
+{
+  "name": "red-contrib-om-push2columbus",
+  "version": "0.0.1",
+  "description": "Columbus OM client node",
+  "main": "push2columbus.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Xavier nicolovici <xavier@nicolovici.com>",
+  "license": "GPL",
+  "node-red": {
+    "version": ">=2.0.0",
+    "nodes": {
+        "push2columbus": "push2columbus.js"
+    }
+}
+}

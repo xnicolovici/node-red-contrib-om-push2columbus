@@ -1,0 +1,54 @@
+<script type="text/javascript">
+    RED.nodes.registerType('push2columbus',{
+        category: 'connector',
+        color: "rgb(218, 196, 180)",
+        defaults: {
+            name: {value:""},
+            instance: { value: "PColumbusOM", required: true },
+            appsource: {value: "DPR", required: true },
+            epuid: {value: "00000000_00000000_000", required: true },
+            doctype: {value: "SPOOL", required: true },
+            action: {value: "PRT", required: true },
+        },
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return this.name||"push2columbus";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="push2columbus">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-instance"><i class="fa fa-tag"></i> Instance</label>
+        <select id="node-input-instance" placeholder="Instance">
+            <option value="PColumbusOM">PColumbusOM</option>
+            <option value="QColumbusOM">QColumbusOM</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-appsource"><i class="fa fa-tag"></i> AppSource</label>
+        <input type="text" id="node-input-appsource" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-epuid"><i class="fa fa-tag"></i> EPUID</label>
+        <input type="text" id="node-input-epuid" placeholder="EPUID">
+    </div>
+    <div class="form-row">
+        <label for="node-input-doctype"><i class="fa fa-tag"></i> DocType</label>
+        <input type="text" id="node-input-doctype" placeholder="DocType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-tag"></i> Action</label>
+        <input type="text" id="node-input-action" placeholder="Action">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="push2columbus">
+    <p>Node to push data into Columbus OM using routing table keys (AppSource, EPUID, DocType, Action)</p>
+</script>
