@@ -45,6 +45,11 @@ module.exports = function(RED) {
             axios
             .post('http://127.0.0.1:1880/test', {
                 todo: 'Buy the milk'
+            }, {
+                auth: {
+                    username: 'xavier',
+                    password: 'test'
+                }
             })
             .then(res => {
                 msg.payload = res;
