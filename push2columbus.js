@@ -39,12 +39,29 @@ module.exports = function(RED) {
         }
 
         node.on('input', function(msg, send, done) {
+            
+            const axios = require('axios')
 
-            msg.payload = (node.appsource + "/" + node.doctype).toLowerCase();
-
-            send(msg);
-            renewStatus();
-            done();
+            axios
+            .post('http://127.0.0.1:1880/test', {
+                todo: 'Buy the milk'
+            })
+            .then(res => {
+                msg.payload = res;
+                msg.httpStatusCode = res.status;
+                send(msg);
+                renewStatus();
+                done();
+            })
+            .catch(error => {
+                msg.payload = error;
+                // msg.httpStatusCode = res.status;
+                send(msg);
+                // renewStatus();
+                // done();
+                done(error)
+            })
+            
         });
 
         node.on('close', function(remove, done) {
