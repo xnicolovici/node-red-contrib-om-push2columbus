@@ -4,6 +4,9 @@ module.exports = function(RED) {
     function ColumbusInstanceNode(config) {
 		RED.nodes.createNode(this, config);
 		this.hostname = config.hostname;
+        this.port = config.port;
+        this.baseurl = config.baseurl;
+        this.https = config.https;
 
 		var credentials = this.credentials;
 		if (credentials) {
@@ -33,45 +36,65 @@ module.exports = function(RED) {
         node.doctype = config.doctype;
         node.action = config.action;
 
+        if (node.columbusinstanceConfig) {
 
-        var renewStatus=()=>{
-            node.status({text:"latest:"+node.doctype });
-        }
+            var connectionConfig = {
+                hostname: node.columbusinstanceConfig.hostname,
+                port: node.columbusinstanceConfig.port,
+                base_url: node.columbusinstanceConfig.baseurl,
+                use_https: node.columbusinstanceConfig.https,
+                user: node.columbusinstanceConfig.user,
+                password: node.columbusinstanceConfig.password
+            };
 
-        node.on('input', function(msg, send, done) {
-            
-            const axios = require('axios')
+            var renewStatus=()=>{
+                node.status({text:"latest:"+node.doctype });
+            }
 
-            axios
-            .post('http://127.0.0.1:1880/test', {
-                todo: 'Buy the milk'
-            }, {
-                auth: {
-                    username: 'xavier',
-                    password: 'test'
+            node.on('input', function(msg, send, done) {
+                
+                const axios = require('axios')
+
+                target_url='http';
+                if (connectionConfig.use_https == true) {
+                    target_url += 's'
                 }
-            })
-            .then(res => {
-                msg.payload = res;
-                msg.httpStatusCode = res.status;
-                send(msg);
-                renewStatus();
-                done();
-            })
-            .catch(error => {
-                msg.payload = error;
-                // msg.httpStatusCode = res.status;
-                send(msg);
-                // renewStatus();
-                // done();
-                done(error)
-            })
-            
-        });
+                target_url += '://' + connectionConfig.hostname + ':' + connectionConfig.port;
+                target_url += connectionConfig.base_url;
 
-        node.on('close', function(remove, done) {
-            done();
-        });
+                axios
+                .post(target_url, {
+                    data: 'Unbelievable data :-)'
+                }, {
+                    auth: {
+                        username: 'xavier',
+                        password: 'test'
+                    }
+                })
+                .then(res => {
+                    msg.payload = "TRE"; //msg.appsource;
+                    msg.httpStatusCode = res.status;
+                    send(msg);
+                    renewStatus();
+                    done();
+                })
+                .catch(error => {
+                    msg.payload = error;
+                    // msg.httpStatusCode = res.status;
+                    send(msg);
+                    // renewStatus();
+                    // done();
+                    done(error)
+                })
+                
+            });
+
+            node.on('close', function(remove, done) {
+                done();
+            });
+        } else {
+            this.error("Missing Columbus Instance configuration");
+        }
     }
     RED.nodes.registerType("push2columbus",Push2ColumbusNode);
 }
