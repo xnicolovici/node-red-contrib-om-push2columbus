@@ -55,12 +55,17 @@ module.exports = function(RED) {
                 
                 const axios = require('axios')
 
-                target_url='http';
-                if (connectionConfig.use_https == true) {
-                    target_url += 's'
-                }
+                //target_url='http';
+                target_url = (connectionConfig.use_https == true) ? 'https' : 'http';
+                //if  {          target_url += 's'
+                //}
                 target_url += '://' + connectionConfig.hostname + ':' + connectionConfig.port;
                 target_url += connectionConfig.base_url;
+
+                msg.appsource = msg.appsource === undefined ? node.appsource : msg.appsource;
+                msg.epuid = msg.epuid === undefined ? node.epuid : msg.epuid;
+                msg.doctype = msg.doctype === undefined ? node.doctype : msg.doctype;
+                msg.action = msg.action === undefined ? node.action : msg.action;
 
                 axios
                 .post(target_url, {
@@ -72,7 +77,6 @@ module.exports = function(RED) {
                     }
                 })
                 .then(res => {
-                    msg.payload = "TRE"; //msg.appsource;
                     msg.httpStatusCode = res.status;
                     send(msg);
                     renewStatus();
